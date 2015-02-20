@@ -1,0 +1,12 @@
+{
+  "name": "git-pull-all",
+  "version": "0.0.0",
+  "description": "Asynchronous git-pull(1) for multiple Git projects.",
+  "main": "index.js",
+  "dependencies": {
+    "async": "~0.9.0"
+  },
+  "devDependencies": {},
+  "author": "Tatsuya Oiwa <tatsuyaoiw@gmail.com>",
+  "license": "MIT"
+}
