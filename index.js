@@ -23,7 +23,7 @@ function readdirs(parent, callback) {
     async.filter(files, isGitProject, function(dirs) {
       callback(null, dirs);
     });
-  })
+  });
 }
 
 /**
@@ -53,7 +53,7 @@ function isGitProject(file, callback) {
  */
 function run(command, options, callback) {
   options = options || {};
-  var child = exec(command, options, callback);
+  exec(command, options, callback);
 }
 
 function gitPull(dir, callback) {
@@ -73,7 +73,7 @@ function gitPull(dir, callback) {
         return callback(wrapError(dir, command, err));
       }
       if (stderr) {
-        return callback(wraperror(dir, command, stderr));
+        return callback(wrapError(dir, command, stderr));
       }
       var ret = {
         dir: dir,
@@ -91,7 +91,7 @@ function gitRemoteShow(dir, callback) {
       return callback(wrapError(dir, command, err));
     }
     if (stderr) {
-      return callback(wraperror(dir, command, stderr));
+      return callback(wrapError(dir, command, stderr));
     }
     var ret = {
       dir: dir,
