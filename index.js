@@ -3,48 +3,38 @@
 var exec = require('child_process').exec;
 var fs = require('fs');
 var join = require('path').join;
+var basename = require('path').basename;
 
 var async = require('async');
 
 /**
- * Return the git project directories.
- *
- * @param  {String}   dir
- * @param  {Function} callback
- */
-function findGitProjects(dir, callback) {
-  fs.readdir(dir, function(err, children) {
-    if (err) {
-      return callback(err);
-    }
-
-    var files = children.map(function(child) {
-      return join(dir, child);
-    });
-
-    async.filter(files, isGitProject, function(gitProjects) {
-      callback(null, gitProjects);
-    });
-  });
-}
-
-/**
- * Check if file is a directory.
+ * Return true if the given file path is a directory.
  *
  * @param  {String}   file
  * @param  {Function} callback
  */
-function isGitProject(file, callback) {
+function isDirectory(file, callback) {
   fs.stat(file, function(err, stats) {
     if (err) {
-      console.log(err);
+      var message = [
+        'Something went wrong on "' + file + '"',
+        'Message: ' + err.message
+      ].join('\n');
+      console.log(message);
       return callback(false);
     }
-    if (!stats.isDirectory()) {
-      return callback(false);
-    }
-    fs.exists(join(file, '.git'), callback);
+    callback(stats.isDirectory());
   });
+}
+
+/**
+ * Check if the given directory is a git repo.
+ *
+ * @param  {String}   dir
+ * @param  {Function} callback
+ */
+function isGitProject(dir, callback) {
+  fs.exists(join(dir, '.git'), callback);
 }
 
 /**
@@ -58,80 +48,94 @@ function run(command, options, callback) {
   exec(command, options, callback);
 }
 
-function gitPull(dir, callback) {
-  gitRemoteShow(dir, function(err, result) {
-    if (err) {
-      return callback(err);
-    }
-    if (!result.stdout) {
-      return callback(null, {
-        dir: dir,
-        stdout: 'Ignored because remote repository does not exist\n'
-      });
-    }
-    var command = 'git pull';
-    run(command, { cwd: dir }, function(err, stdout, stderr) {
-      if (err) {
-        return callback(wrapError(dir, command, err));
-      }
-      if (stderr) {
-        return callback(wrapError(dir, command, stderr));
-      }
-      var ret = {
-        dir: dir,
-        stdout: stdout
-      };
-      callback(null, ret);
-    });
-  });
-}
-
-function gitRemoteShow(dir, callback) {
+/**
+ * Check if remote tracking repo is defined.
+ *
+ * @param  {String}   dir
+ * @param  {Function} callback
+ */
+function hasRemoteRepo(dir, callback) {
   var command = 'git remote show';
   run(command, { cwd: dir }, function(err, stdout, stderr) {
-    if (err) {
-      return callback(wrapError(dir, command, err));
+    if (err || stderr) {
+      var message = [
+        'Something went wrong on "' + dir + '"',
+        'Command: ' + command,
+        'Message: ' + err.message || stderr
+      ].join('\n');
+      console.log(message);
+      return callback(false);
     }
-    if (stderr) {
-      return callback(wrapError(dir, command, stderr));
+    if (!stdout) {
+      console.log('\033[36m' + basename(dir) + '/\033[39m');
+      console.log('Remote tracking repository is not defined\n');
     }
-    var ret = {
-      dir: dir,
-      stdout: stdout
-    };
-    callback(null, ret);
+    callback(!!stdout);
   });
 }
 
-function wrapError(dir, command, err) {
-  var message = [
-    'Something went wrong on "' + dir + '" ...\n',
-    'Command: ' + command,
-    'Message: ' + err.message
-  ].join('');
-  return new Error(message);
+/**
+ * Run "git pull" on the given directory.
+ *
+ * @param  {String}   dir
+ * @param  {Function} callback
+ */
+function gitPull(dir, callback) {
+  var command = 'git pull';
+  run(command, { cwd: dir }, function(err, stdout, stderr) {
+    if (err || stderr) {
+      var message = [
+        'Something went wrong on "' + dir + '" ...',
+        'Command: ' + command,
+        'Message: ' + err.message || stderr
+      ].join('\n');
+      return new Error(message);
+    }
+    console.log('\033[36m' + basename(dir) + '/\033[39m');
+    if (stdout) {
+      console.log(stdout);
+    }
+    callback();
+  });
+}
+
+function main(parentDir) {
+  // Set start point, defalut is current directory
+  var parent = parentDir || '.';
+
+  // Retrieve files in a parent directory
+  fs.readdir(parent, function(err, children) {
+    if (err) {
+      return console.log(err.message);
+    }
+
+    // Concatenate file name and its absolute path
+    var files = children.map(function(child) {
+      return join(parent, child);
+    });
+
+    // Returns files
+    async.filter(files, isDirectory, function(dirs) {
+
+      // Returns git projects
+      async.filter(dirs, isGitProject, function(gitProjects) {
+
+        // Ignore if project does not have remote tracking repo
+        async.filter(gitProjects, hasRemoteRepo, function(trackingRepos) {
+
+          async.each(trackingRepos, gitPull, function(err) {
+            if (err) {
+              console.log(err.message);
+              return;
+            }
+            console.log('Done!');
+          });
+        });
+      });
+    });
+  });
 }
 
 // Parse command line arguments
 var argv = process.argv.slice(2);
-var parentDir = join(process.cwd(), argv.shift() || '.');
-
-findGitProjects(parentDir, function(err, gitProjects) {
-  if (err) {
-    console.log(err.message);
-    return;
-  }
-
-  async.map(gitProjects, gitPull, function(err, results) {
-    if (err) {
-      console.log(err.message);
-      return;
-    }
-    results.forEach(function(result) {
-      console.log('\033[36m' + result.dir + '/\033[39m');
-      if (result.stdout) {
-        console.log(result.stdout);
-      }
-    });
-  });
-});
+main(join(process.cwd(), argv.shift()));
