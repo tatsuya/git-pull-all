@@ -99,10 +99,12 @@ function gitPull(dir, callback) {
   });
 }
 
+/**
+ * Main function.
+ *
+ * @param  {String} parentDir
+ */
 function main(parentDir) {
-  // Set start point, defalut is current directory
-  var parent = parentDir || '.';
-
   // Retrieve files in a parent directory
   fs.readdir(parent, function(err, children) {
     if (err) {
@@ -138,4 +140,4 @@ function main(parentDir) {
 
 // Parse command line arguments
 var argv = process.argv.slice(2);
-main(join(process.cwd(), argv.shift()));
+main(join(process.cwd(), argv.shift() || '.'));
