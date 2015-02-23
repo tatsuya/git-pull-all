@@ -102,9 +102,9 @@ function gitPull(dir, callback) {
 /**
  * Main function.
  *
- * @param  {String} parentDir
+ * @param  {String} parent
  */
-function main(parentDir) {
+function main(parent) {
   // Retrieve files in a parent directory
   fs.readdir(parent, function(err, children) {
     if (err) {
