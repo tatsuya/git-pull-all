@@ -1,8 +1,10 @@
 {
   "name": "git-pull-all",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Asynchronous git-pull(1) for multiple Git projects.",
-  "main": "index.js",
+  "bin": {
+    "git-pull-all": "index.js"
+  },
   "scripts": {
     "lint": "jshint *.js"
   },
@@ -11,6 +13,10 @@
   },
   "devDependencies": {
     "jshint": "^2.6.0"
+  },
+  "repostitory": {
+    "type": "git",
+    "url": "https://github.com/tatsuyaoiw/git-pull-all.git"
   },
   "author": "Tatsuya Oiwa <tatsuyaoiw@gmail.com>",
   "license": "MIT"
