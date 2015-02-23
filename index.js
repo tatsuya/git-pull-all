@@ -7,23 +7,23 @@ var join = require('path').join;
 var async = require('async');
 
 /**
- * Return the child directories of the given parent directory.
+ * Return the git project directories.
  *
- * @param  {String}   parent
+ * @param  {String}   dir
  * @param  {Function} callback
  */
-function readdirs(parent, callback) {
-  fs.readdir(parent, function(err, children) {
+function findGitProjects(dir, callback) {
+  fs.readdir(dir, function(err, children) {
     if (err) {
       return callback(err);
     }
 
     var files = children.map(function(child) {
-      return join(parent, child);
+      return join(dir, child);
     });
 
-    async.filter(files, isGitProject, function(dirs) {
-      callback(null, dirs);
+    async.filter(files, isGitProject, function(gitProjects) {
+      callback(null, gitProjects);
     });
   });
 }
@@ -114,15 +114,15 @@ function wrapError(dir, command, err) {
 
 // Parse command line arguments
 var argv = process.argv.slice(2);
-var cwd = join(process.cwd(), argv.shift() || '.');
+var parentDir = join(process.cwd(), argv.shift() || '.');
 
-readdirs(cwd, function(err, dirs) {
+findGitProjects(parentDir, function(err, gitProjects) {
   if (err) {
     console.log(err.message);
     return;
   }
 
-  async.map(dirs, gitPull, function(err, results) {
+  async.map(gitProjects, gitPull, function(err, results) {
     if (err) {
       console.log(err.message);
       return;
