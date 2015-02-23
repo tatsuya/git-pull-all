@@ -2,6 +2,12 @@
 
 Asynchronous git-pull(1) for multiple Git projects.
 
+## Installation
+
+```
+$ npm install -g git-pull-all
+```
+
 ## Usage
 
 ```
