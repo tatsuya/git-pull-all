@@ -14,7 +14,7 @@ $ npm install -g git-pull-all
 $ cd ~/Projects
 $ ls
 git-project-a  git-project-b  git-project-c
-$ ./git-pull-all
+$ git-pull-all
 /home/tatsuyaoiw/Projects/Github/git-project-a/
 Already up-to-date.
 
