@@ -37,7 +37,7 @@ function isGitProject(dir, callback) {
   fs.exists(join(dir, '.git'), function(ret) {
     if (!ret) {
       console.log('\033[36m' + basename(dir) + '/\033[39m');
-      console.log('Not a git repository\n');
+      console.log('Not a git repository');
     }
     callback(ret);
   });
@@ -74,7 +74,7 @@ function hasRemoteRepo(dir, callback) {
     }
     if (!stdout) {
       console.log('\033[36m' + basename(dir) + '/\033[39m');
-      console.log('Remote tracking repository is not defined\n');
+      console.log('Remote tracking repository is not defined');
     }
     callback(!!stdout);
   });
@@ -99,7 +99,7 @@ function gitPull(dir, callback) {
     }
     console.log('\033[36m' + basename(dir) + '/\033[39m');
     if (stdout) {
-      console.log(stdout);
+      process.stdout.write(stdout);
     }
     callback();
   });
