@@ -2,6 +2,8 @@
 
 Concurrent [git pull][git-pull] executor for multiple git repositories.
 
+![](demo.gif)
+
 [git-pull-all] is a command line tool to execute [git pull][git-pull] on multiple git repositories in parallel. Because it is asynchronous, it works really well especially for **many** projects and must be a lot faster than any synchronous ways, such as:
 
 ```sh
