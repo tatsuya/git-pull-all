@@ -1,7 +1,7 @@
 {
   "name": "git-pull-all",
   "version": "0.0.7",
-  "description": "Asynchronous git-pull(1) for multiple Git projects.",
+  "description": "Concurrent git pull executor for multiple git repositories.",
   "bin": {
     "git-pull-all": "index.js"
   },
@@ -18,6 +18,14 @@
     "type": "git",
     "url": "https://github.com/tatsuyaoiw/git-pull-all.git"
   },
+  "bugs": {
+    "url": "https://github.com/tatsuyaoiw/git-pull-all/issues"
+  },
+  "homepage": "https://github.com/tatsuyaoiw/git-pull-all",
+  "keywords": [
+    "git",
+    "pull"
+  ],
   "author": "Tatsuya Oiwa <tatsuyaoiw@gmail.com>",
   "license": "MIT"
 }
