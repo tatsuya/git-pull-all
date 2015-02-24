@@ -67,7 +67,7 @@ function hasRemoteRepo(dir, callback) {
       var message = [
         'Something went wrong on "' + dir + '"',
         'Command: ' + command,
-        'Message: ' + err.message || stderr
+        'Message: ' + err && err.message || stderr
       ].join('\n');
       console.log(message);
       return callback(false);
@@ -90,10 +90,11 @@ function gitPull(dir, callback) {
   var command = 'git pull';
   run(command, { cwd: dir }, function(err, stdout, stderr) {
     if (err || stderr) {
+      console.log(stderr);
       var message = [
         'Something went wrong on "' + dir + '" ...',
         'Command: ' + command,
-        'Message: ' + err.message || stderr
+        'Message: ' + err && err.message || stderr
       ].join('\n');
       return new Error(message);
     }
