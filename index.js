@@ -34,7 +34,13 @@ function isDirectory(file, callback) {
  * @param  {Function} callback
  */
 function isGitProject(dir, callback) {
-  fs.exists(join(dir, '.git'), callback);
+  fs.exists(join(dir, '.git'), function(ret) {
+    if (!ret) {
+      console.log('\033[36m' + basename(dir) + '/\033[39m');
+      console.log('Not a git repository\n');
+    }
+    callback(ret);
+  });
 }
 
 /**
