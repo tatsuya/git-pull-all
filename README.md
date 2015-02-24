@@ -1,6 +1,7 @@
 # git-pull-all
 
-Asynchronous git-pull(1) for multiple Git projects.
+Asynchronous [git-pull(1)][git-pull
+] for multiple Git projects.
 
 ## Installation
 
@@ -28,3 +29,5 @@ Already up-to-date.
 ## Licence
 
 MIT
+
+[git-pull]: http://git-scm.com/docs/git-pull
