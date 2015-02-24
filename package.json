@@ -1,6 +1,6 @@
 {
   "name": "git-pull-all",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Asynchronous git-pull(1) for multiple Git projects.",
   "bin": {
     "git-pull-all": "index.js"
