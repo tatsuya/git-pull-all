@@ -1,6 +1,6 @@
 {
   "name": "git-pull-all",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Concurrent git pull executor for multiple git repositories.",
   "bin": {
     "git-pull-all": "index.js"
