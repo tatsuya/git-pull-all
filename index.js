@@ -64,11 +64,14 @@ function hasRemoteRepo(dir, callback) {
   var command = 'git remote show';
   run(command, { cwd: dir }, function(err, stdout, stderr) {
     if (err || stderr) {
-      var message = [
-        'Something went wrong on "' + dir + '"',
-        'Command: ' + command,
-        'Message: ' + err && err.message || stderr
-      ].join('\n');
+      var message = '';
+      message += 'Something went wrong on "' + dir + '" ...';
+      message += 'Command: ' + command;
+      if (err) {
+        message += 'Message: ' + err.message;
+      } else if (stderr) {
+        message += 'Message: ' + stderr;;
+      }
       console.log(message);
       return callback(false);
     }
@@ -90,12 +93,14 @@ function gitPull(dir, callback) {
   var command = 'git pull';
   run(command, { cwd: dir }, function(err, stdout, stderr) {
     if (err || stderr) {
-      console.log(stderr);
-      var message = [
-        'Something went wrong on "' + dir + '" ...',
-        'Command: ' + command,
-        'Message: ' + err && err.message || stderr
-      ].join('\n');
+      var message = '';
+      message += 'Something went wrong on "' + dir + '" ...';
+      message += 'Command: ' + command;
+      if (err) {
+        message += 'Message: ' + err.message;
+      } else if (stderr) {
+        message += 'Message: ' + stderr;;
+      }
       return new Error(message);
     }
     console.log('\033[36m' + basename(dir) + '/\033[39m');
