@@ -101,6 +101,7 @@ function gitPull(dir, callback) {
       } else if (stderr) {
         message += 'Message: ' + stderr;;
       }
+      console.log(message);
       return new Error(message);
     }
     console.log('\033[36m' + basename(dir) + '/\033[39m');
