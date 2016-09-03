@@ -111,22 +111,28 @@ function gitPull(dir, callback) {
   });
 }
 
+function readFiles(dir, callback) {
+  fs.readdir(dir, function(err, children) {
+    if (err) {
+      return callback(err);
+    }
+    var files = children.map(function(child) {
+      return join(dir, child);
+    });
+    return callback(null, files);
+  });
+}
+
 /**
  * Main function.
  *
  * @param  {String} parent
  */
 function main(parent) {
-  // Retrieve files in a parent directory
-  fs.readdir(parent, function(err, children) {
+  readFiles(parent, function(err, files) {
     if (err) {
       return console.log(err.message);
     }
-
-    // Concatenate file name and its absolute path
-    var files = children.map(function(child) {
-      return join(parent, child);
-    });
 
     // Returns files
     async.filter(files, isDirectory, function(dirs) {
