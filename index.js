@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 var exec = require('child_process').exec;
 var fs = require('fs');
 var join = require('path').join;
@@ -128,7 +126,7 @@ function readFiles(dir, callback) {
  *
  * @param  {String} parent
  */
-function main(parent) {
+module.exports = function(parent) {
   readFiles(parent, function(err, files) {
     if (err) {
       return console.log(err.message);
@@ -154,8 +152,4 @@ function main(parent) {
       });
     });
   });
-}
-
-// Parse command line arguments
-var argv = process.argv.slice(2);
-main(join(process.cwd(), argv.shift() || '.'));
+};
