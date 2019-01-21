@@ -43,7 +43,8 @@ Not a git repository
 cool-examples/
 Already up-to-date.
 super-express/
-Already up-to-date.```
+Already up-to-date.
+```
 
 You can also specify the path where the command is executed.
 
@@ -51,13 +52,16 @@ You can also specify the path where the command is executed.
 $ git-pull-all ~/Projects
 ```
 
+
 You can also update repositories recursively.
 
 ```
 $ git-pull-all ~/Projects -r
 ```
 
+
 Assume you have these files and directories:
+
 
 ```
 ~/Projects/
@@ -73,7 +77,9 @@ Assume you have these files and directories:
       .git/
 ```
 
+
 When you run `git-pull-all -r` command on `~/Projects` directory, it should find all nested child git repositories (in the above case *cool-examples*, *super-express* and *confidential*) then execute `git pull` on each of them.
+
 
 ```
 $ cd ~/Projects
@@ -91,6 +97,8 @@ Already up-to-date.
 super-express/
 Already up-to-date.
 ```
+
+
 ## Licence
 
 MIT
