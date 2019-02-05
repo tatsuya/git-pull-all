@@ -42,6 +42,18 @@ function isGitProject(dir, callback) {
 }
 
 /**
+ * Check if the given directory is not a git repo.
+ *
+ * @param  {String}   dir
+ * @param  {Function} callback
+ */
+function isNotGitProject(dir, callback) {
+  fs.exists(join(dir, '.git'), function(ret) {
+    callback(!ret);
+  });
+}
+
+/**
  * Run the given command.
  *
  * @param  {String} command
@@ -121,12 +133,30 @@ function readFiles(dir, callback) {
   });
 }
 
-/**
- * Main function.
- *
- * @param  {String} parent
- */
-module.exports = function(parent) {
+function pullFromDirectoryRecursively(dir){
+  pullFromDirectory(dir);
+  readFiles(dir, function(err, files) {
+    if (err) {
+      return console.log(err.message);
+    }
+
+    // Returns files
+    async.filter(files, isDirectory, function(dirs) {
+      // Returns non-git projects
+      async.filter(dirs, isNotGitProject, function(nonGitProjects) {
+        // pull recursively for non-git projects
+        async.each(nonGitProjects, pullFromDirectoryRecursively, function(err) {
+          if (err) {
+            console.log(err.message);
+            return;
+          }
+        })
+      });
+    });
+  });
+}
+
+function pullFromDirectory(parent) {
   readFiles(parent, function(err, files) {
     if (err) {
       return console.log(err.message);
@@ -146,10 +176,23 @@ module.exports = function(parent) {
               console.log(err.message);
               return;
             }
-            console.log('Done!');
           });
         });
       });
     });
   });
+}
+
+/**
+ * Main function.
+ *
+ * @param  {String} parent
+ */
+module.exports = function(parent, isRecursive) {
+  if (isRecursive) {
+    pullFromDirectoryRecursively(parent);
+  }else{
+    pullFromDirectory(parent);
+  }
+  console.log('Done!');
 };
